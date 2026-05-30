@@ -15,13 +15,20 @@ const ICON_MAP = {
 };
 
 export class WeatherManager {
-  constructor(settings, storage) {
-    this.settings = settings || {};
+  constructor(configSettings, storage) {
+    this._configDefaults = configSettings || {};
     this.storage = storage;
+    this.settings = this._loadSettings();
     this._intervalId = null;
     this._iconEl = document.querySelector('.weather-icon');
     this._tempEl = document.querySelector('.weather-temp');
     this._descEl = document.querySelector('.weather-desc');
+  }
+
+  _loadSettings() {
+    const stored = this.storage.get('weather_settings');
+    if (stored) return stored;
+    return { ...this._configDefaults };
   }
 
   async init() {
@@ -34,8 +41,26 @@ export class WeatherManager {
     }
 
     await this.fetchWeather();
-    const interval = (this.settings.refreshMinutes || 30) * 60 * 1000;
-    this._intervalId = setInterval(() => this.fetchWeather(), interval);
+    this._startInterval();
+  }
+
+  applySettings(newSettings) {
+    this.settings = { ...this.settings, ...newSettings };
+    this.storage.set('weather_settings', this.settings);
+
+    this._stopInterval();
+
+    if (!this.settings.enabled || !this.settings.apiKey) {
+      this._showPlaceholder();
+      return;
+    }
+
+    this.fetchWeather();
+    this._startInterval();
+  }
+
+  getSettings() {
+    return { ...this.settings };
   }
 
   async fetchWeather() {
@@ -60,6 +85,19 @@ export class WeatherManager {
     }
   }
 
+  _startInterval() {
+    this._stopInterval();
+    const interval = (this.settings.refreshMinutes || 30) * 60 * 1000;
+    this._intervalId = setInterval(() => this.fetchWeather(), interval);
+  }
+
+  _stopInterval() {
+    if (this._intervalId) {
+      clearInterval(this._intervalId);
+      this._intervalId = null;
+    }
+  }
+
   _updateDOM(data) {
     if (this._iconEl) this._iconEl.textContent = ICON_MAP[data.icon] || '🌡️';
     if (this._tempEl) this._tempEl.textContent = `${data.temp}°C`;
@@ -73,6 +111,6 @@ export class WeatherManager {
   }
 
   destroy() {
-    if (this._intervalId) clearInterval(this._intervalId);
+    this._stopInterval();
   }
 }

@@ -1,7 +1,8 @@
 export class TTSManager {
-  constructor(settings, storage) {
-    this.settings = settings || {};
+  constructor(configSettings, storage) {
+    this._configDefaults = configSettings || {};
     this._storage = storage;
+    this.settings = this._loadSettings();
     this._synth = window.speechSynthesis || null;
     this._voice = null;
     this._initialized = false;
@@ -12,9 +13,18 @@ export class TTSManager {
     };
   }
 
+  _loadSettings() {
+    const stored = this._storage.get('tts_settings');
+    if (stored) return stored;
+    return { ...this._configDefaults };
+  }
+
+  _saveSettings() {
+    this._storage.set('tts_settings', this.settings);
+  }
+
   init() {
     if (this._initialized || !this._synth) return;
-    if (!this.settings.enabled) return;
 
     this._initialized = true;
     this._selectVoice();
@@ -23,9 +33,9 @@ export class TTSManager {
       this._synth.onvoiceschanged = () => this._selectVoice();
     }
 
-    document.addEventListener('classync:class-start', this._boundHandlers.start);
-    document.addEventListener('classync:class-end', this._boundHandlers.end);
-    document.addEventListener('classync:warning', this._boundHandlers.warning);
+    if (this.settings.enabled) {
+      this._attachListeners();
+    }
   }
 
   speak(text) {
@@ -42,22 +52,36 @@ export class TTSManager {
 
   setEnabled(enabled) {
     this.settings.enabled = enabled;
-    this._storage.set('settings', { ...this._storage.get('settings', {}), tts: this.settings });
-    if (enabled && !this._initialized) this.init();
+    this._saveSettings();
+    if (enabled) {
+      if (!this._initialized) this.init();
+      this._attachListeners();
+    } else {
+      this._detachListeners();
+    }
   }
 
   setVolume(vol) {
     this.settings.volume = vol;
+    this._saveSettings();
   }
 
   setRate(rate) {
     this.settings.rate = rate;
+    this._saveSettings();
   }
 
   setVoice(voiceName) {
     this.settings.voiceName = voiceName;
-    const voices = this._synth.getVoices();
-    this._voice = voices.find(v => v.name === voiceName) || null;
+    this._saveSettings();
+    if (this._synth) {
+      const voices = this._synth.getVoices();
+      this._voice = voices.find(v => v.name === voiceName) || null;
+    }
+  }
+
+  getSettings() {
+    return { ...this.settings };
   }
 
   getAvailableVoices() {
@@ -66,6 +90,16 @@ export class TTSManager {
   }
 
   destroy() {
+    this._detachListeners();
+  }
+
+  _attachListeners() {
+    document.addEventListener('classync:class-start', this._boundHandlers.start);
+    document.addEventListener('classync:class-end', this._boundHandlers.end);
+    document.addEventListener('classync:warning', this._boundHandlers.warning);
+  }
+
+  _detachListeners() {
     document.removeEventListener('classync:class-start', this._boundHandlers.start);
     document.removeEventListener('classync:class-end', this._boundHandlers.end);
     document.removeEventListener('classync:warning', this._boundHandlers.warning);
