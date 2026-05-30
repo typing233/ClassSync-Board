@@ -1,0 +1,73 @@
+{
+  "meta": {
+    "schoolName": "示范中学",
+    "className": "高三(1)班",
+    "semester": "2025-2026 第二学期"
+  },
+  "themes": {
+    "语文": { "primary": "#e74c3c", "primaryRgb": "231,76,60", "secondary": "#fadbd8", "icon": "📖" },
+    "数学": { "primary": "#3498db", "primaryRgb": "52,152,219", "secondary": "#d6eaf8", "icon": "📐" },
+    "英语": { "primary": "#27ae60", "primaryRgb": "39,174,96", "secondary": "#d5f5e3", "icon": "🌍" },
+    "物理": { "primary": "#8e44ad", "primaryRgb": "142,68,173", "secondary": "#ebdef0", "icon": "⚡" },
+    "化学": { "primary": "#e67e22", "primaryRgb": "230,126,34", "secondary": "#fdebd0", "icon": "🧪" },
+    "生物": { "primary": "#1abc9c", "primaryRgb": "26,188,156", "secondary": "#d1f2eb", "icon": "🌱" },
+    "历史": { "primary": "#d35400", "primaryRgb": "211,84,0", "secondary": "#fbeee6", "icon": "📜" },
+    "政治": { "primary": "#c0392b", "primaryRgb": "192,57,43", "secondary": "#f9ebea", "icon": "⚖️" },
+    "体育": { "primary": "#16a085", "primaryRgb": "22,160,133", "secondary": "#d0ece7", "icon": "⚽" },
+    "default": { "primary": "#2c3e50", "primaryRgb": "44,62,80", "secondary": "#eaecee", "icon": "📚" }
+  },
+  "schedule": {
+    "monday": [
+      { "period": 1, "subject": "语文", "teacher": "张老师", "startTime": "08:00", "endTime": "08:45", "room": "教室" },
+      { "period": 2, "subject": "数学", "teacher": "李老师", "startTime": "08:55", "endTime": "09:40", "room": "教室" },
+      { "period": 3, "subject": "英语", "teacher": "王老师", "startTime": "10:00", "endTime": "10:45", "room": "教室" },
+      { "period": 4, "subject": "物理", "teacher": "赵老师", "startTime": "10:55", "endTime": "11:40", "room": "实验室" },
+      { "period": 5, "subject": "化学", "teacher": "刘老师", "startTime": "14:00", "endTime": "14:45", "room": "实验室" },
+      { "period": 6, "subject": "生物", "teacher": "陈老师", "startTime": "14:55", "endTime": "15:40", "room": "教室" },
+      { "period": 7, "subject": "历史", "teacher": "孙老师", "startTime": "16:00", "endTime": "16:45", "room": "教室" }
+    ],
+    "tuesday": [
+      { "period": 1, "subject": "数学", "teacher": "李老师", "startTime": "08:00", "endTime": "08:45", "room": "教室" },
+      { "period": 2, "subject": "语文", "teacher": "张老师", "startTime": "08:55", "endTime": "09:40", "room": "教室" },
+      { "period": 3, "subject": "物理", "teacher": "赵老师", "startTime": "10:00", "endTime": "10:45", "room": "实验室" },
+      { "period": 4, "subject": "英语", "teacher": "王老师", "startTime": "10:55", "endTime": "11:40", "room": "教室" },
+      { "period": 5, "subject": "政治", "teacher": "周老师", "startTime": "14:00", "endTime": "14:45", "room": "教室" },
+      { "period": 6, "subject": "体育", "teacher": "吴老师", "startTime": "14:55", "endTime": "15:40", "room": "操场" },
+      { "period": 7, "subject": "化学", "teacher": "刘老师", "startTime": "16:00", "endTime": "16:45", "room": "实验室" }
+    ],
+    "wednesday": [
+      { "period": 1, "subject": "英语", "teacher": "王老师", "startTime": "08:00", "endTime": "08:45", "room": "教室" },
+      { "period": 2, "subject": "数学", "teacher": "李老师", "startTime": "08:55", "endTime": "09:40", "room": "教室" },
+      { "period": 3, "subject": "语文", "teacher": "张老师", "startTime": "10:00", "endTime": "10:45", "room": "教室" },
+      { "period": 4, "subject": "生物", "teacher": "陈老师", "startTime": "10:55", "endTime": "11:40", "room": "实验室" },
+      { "period": 5, "subject": "物理", "teacher": "赵老师", "startTime": "14:00", "endTime": "14:45", "room": "实验室" },
+      { "period": 6, "subject": "历史", "teacher": "孙老师", "startTime": "14:55", "endTime": "15:40", "room": "教室" },
+      { "period": 7, "subject": "数学", "teacher": "李老师", "startTime": "16:00", "endTime": "16:45", "room": "教室" }
+    ],
+    "thursday": [
+      { "period": 1, "subject": "物理", "teacher": "赵老师", "startTime": "08:00", "endTime": "08:45", "room": "实验室" },
+      { "period": 2, "subject": "英语", "teacher": "王老师", "startTime": "08:55", "endTime": "09:40", "room": "教室" },
+      { "period": 3, "subject": "化学", "teacher": "刘老师", "startTime": "10:00", "endTime": "10:45", "room": "实验室" },
+      { "period": 4, "subject": "语文", "teacher": "张老师", "startTime": "10:55", "endTime": "11:40", "room": "教室" },
+      { "period": 5, "subject": "数学", "teacher": "李老师", "startTime": "14:00", "endTime": "14:45", "room": "教室" },
+      { "period": 6, "subject": "生物", "teacher": "陈老师", "startTime": "14:55", "endTime": "15:40", "room": "实验室" },
+      { "period": 7, "subject": "体育", "teacher": "吴老师", "startTime": "16:00", "endTime": "16:45", "room": "操场" }
+    ],
+    "friday": [
+      { "period": 1, "subject": "数学", "teacher": "李老师", "startTime": "08:00", "endTime": "08:45", "room": "教室" },
+      { "period": 2, "subject": "化学", "teacher": "刘老师", "startTime": "08:55", "endTime": "09:40", "room": "实验室" },
+      { "period": 3, "subject": "英语", "teacher": "王老师", "startTime": "10:00", "endTime": "10:45", "room": "教室" },
+      { "period": 4, "subject": "物理", "teacher": "赵老师", "startTime": "10:55", "endTime": "11:40", "room": "实验室" },
+      { "period": 5, "subject": "语文", "teacher": "张老师", "startTime": "14:00", "endTime": "14:45", "room": "教室" },
+      { "period": 6, "subject": "政治", "teacher": "周老师", "startTime": "14:55", "endTime": "15:40", "room": "教室" },
+      { "period": 7, "subject": "生物", "teacher": "陈老师", "startTime": "16:00", "endTime": "16:45", "room": "实验室" }
+    ],
+    "saturday": [],
+    "sunday": []
+  },
+  "settings": {
+    "earlyWarningSeconds": 60,
+    "soundEnabled": true,
+    "animationDuration": 3000
+  }
+}

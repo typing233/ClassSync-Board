@@ -1,0 +1,231 @@
+.timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 60px;
+  min-height: 100%;
+}
+
+.timeline__line {
+  position: absolute;
+  left: 28px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 255, 255, 0.15) 5%,
+    rgba(255, 255, 255, 0.15) 95%,
+    transparent
+  );
+}
+
+.timeline__needle {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 10;
+  pointer-events: none;
+  transition: top 1s linear;
+}
+
+.timeline__needle::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--theme-primary);
+  box-shadow: 0 0 12px rgba(var(--theme-primary-rgb), 0.6);
+  animation: needle-pulse 2s infinite;
+}
+
+.timeline__needle::after {
+  content: '';
+  position: absolute;
+  left: 44px;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    var(--theme-primary),
+    rgba(var(--theme-primary-rgb), 0.3),
+    transparent
+  );
+}
+
+@keyframes needle-pulse {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(var(--theme-primary-rgb), 0.6);
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    box-shadow: 0 0 24px rgba(var(--theme-primary-rgb), 0.8);
+    transform: translateY(-50%) scale(1.2);
+  }
+}
+
+.period-card {
+  position: relative;
+  padding: 18px 22px;
+  border-radius: var(--radius-md);
+  transition:
+    transform var(--transition-medium),
+    opacity var(--transition-medium),
+    box-shadow var(--transition-medium),
+    border-color var(--transition-medium);
+  cursor: default;
+}
+
+.period-card::before {
+  content: '';
+  position: absolute;
+  left: -38px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: var(--transition-medium);
+}
+
+.period-card--past {
+  opacity: 0.45;
+}
+
+.period-card--past::before {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.period-card--active {
+  transform: scale(1.02);
+  animation: active-glow 3s infinite;
+}
+
+.period-card--active::before {
+  background: var(--theme-primary);
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 10px rgba(var(--theme-primary-rgb), 0.6);
+}
+
+@keyframes active-glow {
+  0%, 100% {
+    box-shadow:
+      0 8px 32px rgba(var(--theme-primary-rgb), 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 12px 48px rgba(var(--theme-primary-rgb), 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+}
+
+.period-card--future::before {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.period-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.period-card__subject {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.period-card__icon {
+  font-size: 1.5rem;
+}
+
+.period-card__name {
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-weight: 700;
+}
+
+.period-card__room {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+.period-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.period-card__teacher {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.period-card__time {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+.period-card__progress {
+  margin-top: 12px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.period-card__progress-bar {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--theme-primary), rgba(var(--theme-primary-rgb), 0.6));
+  transition: width 1s linear;
+  box-shadow: 0 0 8px rgba(var(--theme-primary-rgb), 0.4);
+}
+
+.period-card__period-num {
+  position: absolute;
+  left: -56px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  width: 20px;
+  text-align: center;
+}
+
+.break-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  gap: 8px;
+}
+
+.break-indicator::before,
+.break-indicator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}

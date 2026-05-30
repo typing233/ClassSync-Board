@@ -1,0 +1,143 @@
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ripple-expand {
+  from {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.6;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(4);
+    opacity: 0;
+  }
+}
+
+@keyframes text-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--theme-primary-rgb), 0.3) 0%,
+    rgba(0, 0, 0, 0.8) 70%
+  );
+  backdrop-filter: blur(0px);
+  transition:
+    opacity 0.4s ease,
+    backdrop-filter 0.4s ease;
+}
+
+.transition-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+  backdrop-filter: blur(8px);
+}
+
+.transition-overlay__ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(var(--theme-primary-rgb), 0.3);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+}
+
+.transition-overlay.active .transition-overlay__ripple {
+  animation: ripple-expand 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.transition-overlay__icon {
+  font-size: clamp(4rem, 8vw, 7rem);
+  opacity: 0;
+  transform: scale(0.3);
+  will-change: transform, opacity;
+}
+
+.transition-overlay.active .transition-overlay__icon {
+  animation: scale-in 0.6s var(--transition-spring) 0.2s forwards;
+}
+
+.transition-overlay__subject {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  opacity: 0;
+  will-change: transform, opacity, filter;
+  margin-top: 16px;
+}
+
+.transition-overlay.active .transition-overlay__subject {
+  animation: text-reveal 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
+}
+
+.transition-overlay__status {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  color: var(--text-secondary);
+  opacity: 0;
+  margin-top: 12px;
+}
+
+.transition-overlay.active .transition-overlay__status {
+  animation: text-reveal 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;
+}
+
+.period-card {
+  animation: fade-in-up 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.period-card:nth-child(1) { animation-delay: 0.05s; }
+.period-card:nth-child(2) { animation-delay: 0.1s; }
+.period-card:nth-child(3) { animation-delay: 0.15s; }
+.period-card:nth-child(4) { animation-delay: 0.2s; }
+.period-card:nth-child(5) { animation-delay: 0.25s; }
+.period-card:nth-child(6) { animation-delay: 0.3s; }
+.period-card:nth-child(7) { animation-delay: 0.35s; }
+.period-card:nth-child(8) { animation-delay: 0.4s; }
+.period-card:nth-child(9) { animation-delay: 0.45s; }
+.period-card:nth-child(10) { animation-delay: 0.5s; }
