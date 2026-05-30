@@ -10,7 +10,7 @@ export class Clock {
   }
 
   start() {
-    this._updateDate();
+    this.updateDate();
     this._tick();
   }
 
@@ -30,14 +30,14 @@ export class Clock {
       this._clockEl.textContent = `${h}:${m}:${s}`;
 
       if (h === '00' && m === '00' && s === '00') {
-        this._updateDate();
+        this.updateDate();
       }
     }
 
     this._rafId = requestAnimationFrame(() => this._tick());
   }
 
-  _updateDate() {
+  updateDate() {
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1;

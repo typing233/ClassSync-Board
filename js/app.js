@@ -15,6 +15,8 @@ class App {
     this.themeEngine = null;
     this.animationController = null;
     this.soundManager = null;
+    this._currentDate = null;
+    this._midnightCheckId = null;
   }
 
   async init() {
@@ -34,6 +36,8 @@ class App {
     const settings = this.configLoader.getSettings();
     const themes = this.configLoader.getThemes();
     const meta = this.configLoader.getMeta();
+
+    this._currentDate = new Date().toDateString();
 
     this._setupMeta(meta);
     this._setupSoundInit(settings);
@@ -56,17 +60,57 @@ class App {
 
     this.soundManager = new SoundManager(settings);
 
-    document.addEventListener('classync:tick', (e) => {
+    this._tickHandler = (e) => {
       this.timeline.update(e.detail);
       this._updateSidebar(e.detail);
+    };
+    document.addEventListener('classync:tick', this._tickHandler);
+
+    document.addEventListener('classync:class-init', (e) => {
+      const period = e.detail.currentPeriod;
+      if (period) {
+        this.themeEngine.applySubjectTheme(period.subject);
+      }
     });
 
     this.scheduler.start();
 
     this._setupFullscreen();
     this._setupVisibility();
+    this._setupMidnightReload();
 
     setTimeout(() => this.timeline.scrollToActive(), 500);
+  }
+
+  async _reloadSchedule() {
+    try {
+      await this.configLoader.load();
+    } catch (e) {
+      console.error('Midnight reload failed:', e);
+      return;
+    }
+
+    const courses = this.configLoader.getTodayCourses();
+    this._currentDate = new Date().toDateString();
+
+    this.timeline = new TimelineRenderer(
+      document.querySelector('.timeline-container'),
+      courses
+    );
+    this.timeline.render();
+
+    this.scheduler.reload(courses);
+    this.themeEngine.reset();
+    this.clock.updateDate();
+  }
+
+  _setupMidnightReload() {
+    this._midnightCheckId = setInterval(() => {
+      const today = new Date().toDateString();
+      if (today !== this._currentDate) {
+        this._reloadSchedule();
+      }
+    }, 5000);
   }
 
   _setupMeta(meta) {
@@ -83,8 +127,8 @@ class App {
       document.removeEventListener('click', handler);
       document.removeEventListener('keydown', handler);
     };
-    document.addEventListener('click', handler, { once: false });
-    document.addEventListener('keydown', handler, { once: false });
+    document.addEventListener('click', handler);
+    document.addEventListener('keydown', handler);
   }
 
   _updateSidebar(state) {
@@ -115,8 +159,8 @@ class App {
       panel.innerHTML = `
         <div class="status-badge">未开课</div>
         <div class="subject-icon">🌅</div>
-        <div class="subject-name">早安</div>
-        <div class="countdown-label">第一节课开始</div>
+        <div class="subject-name">未开课</div>
+        <div class="countdown-label">第一节课倒计时</div>
         <div class="countdown">${timeUntil}</div>`;
     } else if (state.status === 'after-school') {
       panel.innerHTML = `
@@ -173,9 +217,14 @@ class App {
   _setupVisibility() {
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) {
-        this.scheduler.stop();
-        this.scheduler.start();
-        this.timeline.scrollToActive();
+        const today = new Date().toDateString();
+        if (today !== this._currentDate) {
+          this._reloadSchedule();
+        } else {
+          this.scheduler.stop();
+          this.scheduler.start();
+          this.timeline.scrollToActive();
+        }
       }
     });
   }

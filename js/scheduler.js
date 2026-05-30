@@ -7,6 +7,7 @@ export class Scheduler {
     this._prevState = { status: 'idle', currentPeriod: null, nextPeriod: null };
     this._warningFired = {};
     this._intervalId = null;
+    this._isFirstTick = true;
   }
 
   start() {
@@ -16,13 +17,24 @@ export class Scheduler {
 
   stop() {
     if (this._intervalId) clearInterval(this._intervalId);
+    this._intervalId = null;
+  }
+
+  reload(courses) {
+    this.courses = courses;
+    this._warningFired = {};
+    this._prevState = { status: 'idle', currentPeriod: null, nextPeriod: null };
+    this._isFirstTick = true;
+    this._tick();
   }
 
   _tick() {
     const nowMs = Clock.getNowMs();
     const newState = this._computeState(nowMs);
+    const isInit = this._isFirstTick;
+    this._isFirstTick = false;
 
-    this._detectTransitions(newState);
+    this._detectTransitions(newState, isInit);
     this._checkWarning(newState);
 
     document.dispatchEvent(new CustomEvent('classync:tick', { detail: newState }));
@@ -42,6 +54,8 @@ export class Scheduler {
       nowMs
     };
 
+    if (this.courses.length === 0) return state;
+
     for (let i = 0; i < this.courses.length; i++) {
       const period = this.courses[i];
 
@@ -57,31 +71,31 @@ export class Scheduler {
       }
 
       if (nowMs < period.startMs) {
-        state.status = 'break';
+        if (i === 0) {
+          state.status = 'before-school';
+        } else {
+          state.status = 'break';
+          state.prevPeriod = this.courses[i - 1];
+        }
         state.nextPeriod = period;
-        state.prevPeriod = this.courses[i - 1] || null;
         state.timeUntilNext = period.startMs - nowMs;
         return state;
       }
     }
 
-    if (this.courses.length > 0) {
-      const lastCourse = this.courses[this.courses.length - 1];
-      if (nowMs >= lastCourse.endMs) {
-        state.status = 'after-school';
-        state.prevPeriod = lastCourse;
-      } else {
-        state.status = 'before-school';
-        state.nextPeriod = this.courses[0];
-        state.timeUntilNext = this.courses[0].startMs - nowMs;
-      }
-    }
-
+    const lastCourse = this.courses[this.courses.length - 1];
+    state.status = 'after-school';
+    state.prevPeriod = lastCourse;
     return state;
   }
 
-  _detectTransitions(newState) {
+  _detectTransitions(newState, isInit) {
     const prev = this._prevState;
+
+    if (isInit && newState.status === 'in-class') {
+      document.dispatchEvent(new CustomEvent('classync:class-init', { detail: newState }));
+      return;
+    }
 
     if (newState.status === 'in-class' && prev.status !== 'in-class') {
       document.dispatchEvent(new CustomEvent('classync:class-start', { detail: newState }));

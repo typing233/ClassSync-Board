@@ -11,7 +11,7 @@ export class ThemeEngine {
     this._applyTimeOfDayTheme();
     document.addEventListener('classync:class-start', (e) => {
       const period = e.detail.currentPeriod;
-      if (period) this._applySubjectTheme(period.subject);
+      if (period) this.applySubjectTheme(period.subject);
     });
     document.addEventListener('classync:class-end', () => {
       this._currentSubject = null;
@@ -19,7 +19,7 @@ export class ThemeEngine {
     });
   }
 
-  _applySubjectTheme(subject) {
+  applySubjectTheme(subject) {
     if (subject === this._currentSubject) return;
     this._currentSubject = subject;
 
@@ -32,6 +32,11 @@ export class ThemeEngine {
     root.setProperty('--theme-glow', `rgba(${theme.primaryRgb}, 0.4)`);
 
     this._transitionBackground(theme);
+  }
+
+  reset() {
+    this._currentSubject = null;
+    this._applyTimeOfDayTheme();
   }
 
   _applyTimeOfDayTheme() {
