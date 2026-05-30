@@ -47,4 +47,16 @@ export class ConfigLoader {
   getMeta() {
     return this.data.meta;
   }
+
+  getCountdowns() {
+    return this.data.countdowns || [];
+  }
+
+  getPlugins() {
+    return this.data.plugins || [];
+  }
+
+  getFullConfig() {
+    return this.data;
+  }
 }

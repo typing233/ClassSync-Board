@@ -5,16 +5,28 @@ import { TimelineRenderer } from './timeline-renderer.js';
 import { ThemeEngine } from './theme-engine.js';
 import { AnimationController } from './animation-controller.js';
 import { SoundManager } from './sound-manager.js';
+import { StorageManager } from './storage-manager.js';
+import { WeatherManager } from './weather-manager.js';
+import { CountdownManager } from './countdown-manager.js';
+import { TTSManager } from './tts-manager.js';
+import { PluginManager } from './plugin-manager.js';
+import { SettingsPanel } from './settings-panel.js';
 
 class App {
   constructor() {
     this.configLoader = new ConfigLoader();
+    this.storage = new StorageManager();
     this.clock = null;
     this.scheduler = null;
     this.timeline = null;
     this.themeEngine = null;
     this.animationController = null;
     this.soundManager = null;
+    this.weatherManager = null;
+    this.countdownManager = null;
+    this.ttsManager = null;
+    this.pluginManager = null;
+    this.settingsPanel = null;
     this._currentDate = null;
     this._midnightCheckId = null;
   }
@@ -33,20 +45,19 @@ class App {
     }
 
     const courses = this.configLoader.getTodayCourses();
-    const settings = this.configLoader.getSettings();
+    const settings = this.storage.mergeDefaults(this.configLoader.getSettings());
     const themes = this.configLoader.getThemes();
     const meta = this.configLoader.getMeta();
 
     this._currentDate = new Date().toDateString();
 
     this._setupMeta(meta);
-    this._setupSoundInit(settings);
 
     this.clock = new Clock();
     this.clock.start();
 
     this.themeEngine = new ThemeEngine(themes);
-    this.themeEngine.init();
+    this.themeEngine.init(this.storage);
 
     this.timeline = new TimelineRenderer(
       document.querySelector('.timeline-container'),
@@ -60,9 +71,36 @@ class App {
 
     this.soundManager = new SoundManager(settings);
 
+    this.weatherManager = new WeatherManager(settings.weather || {}, this.storage);
+    await this.weatherManager.init();
+
+    this.countdownManager = new CountdownManager(
+      document.getElementById('countdown-panel'),
+      this.storage
+    );
+    this.countdownManager.init(this.configLoader.getCountdowns());
+
+    this.ttsManager = new TTSManager(settings.tts || {}, this.storage);
+
+    this.pluginManager = new PluginManager(
+      document.getElementById('plugin-area'),
+      this.storage
+    );
+    await this.pluginManager.loadPlugins(this.configLoader.getPlugins());
+
+    this.settingsPanel = new SettingsPanel(
+      this.storage, this.themeEngine, this.ttsManager,
+      this.weatherManager, this.countdownManager
+    );
+    this.settingsPanel.init();
+
+    this._setupSoundInit(settings);
+
     this._tickHandler = (e) => {
       this.timeline.update(e.detail);
       this._updateSidebar(e.detail);
+      this.countdownManager.update();
+      this.pluginManager.tick(e.detail);
     };
     document.addEventListener('classync:tick', this._tickHandler);
 
@@ -122,6 +160,7 @@ class App {
     const overlay = document.getElementById('sound-init');
     const handler = () => {
       this.soundManager.init();
+      this.ttsManager.init();
       overlay.classList.add('hidden');
       setTimeout(() => overlay.remove(), 500);
       document.removeEventListener('click', handler);

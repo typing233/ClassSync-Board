@@ -68,6 +68,26 @@
   "settings": {
     "earlyWarningSeconds": 60,
     "soundEnabled": true,
-    "animationDuration": 3000
-  }
+    "animationDuration": 3000,
+    "weather": {
+      "enabled": true,
+      "apiKey": "",
+      "locationId": "101010100",
+      "refreshMinutes": 30
+    },
+    "tts": {
+      "enabled": true,
+      "volume": 0.8,
+      "rate": 1.0,
+      "voiceName": ""
+    }
+  },
+  "countdowns": [
+    { "id": "gaokao", "name": "高考", "date": "2026-06-07", "icon": "📝" },
+    { "id": "midterm", "name": "期末考试", "date": "2026-07-01", "icon": "✍️" }
+  ],
+  "plugins": [
+    { "id": "daily-quote", "enabled": true, "src": "plugins/daily-quote.js" },
+    { "id": "announcements", "enabled": true, "src": "plugins/announcements.js", "config": { "items": [{ "text": "6月7日高考，全力备战！", "priority": "high" }] } }
+  ]
 }
